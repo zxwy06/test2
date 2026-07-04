@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星辰笔记 · 个人博客</title>
+    <style>
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #f8f9fa;
+            --surface: #ffffff;
+            --text: #2d3436;
+            --text-muted: #636e72;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --border: #e9ecef;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.10);
+            --radius: 12px;
+            --transition: 0.25s ease;
+            --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+            --max-width: 1100px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        a { color: var(--accent); text-decoration: none; transition: color var(--transition); }
+        a:hover { color: #5a4bd1; }
+
+        img { max-width: 100%; display: block; }
+
+        /* ===== Header / Nav ===== */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.92);
+        }
+
+        .nav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 64px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 4px;
+        }
+        .nav-links a {
+            padding: 8px 18px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #f1f0ff;
+            color: var(--accent);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none; border: none;
+            font-size: 1.6rem; cursor: pointer;
+            color: var(--text);
+        }
+
+        /* ===== Layout ===== */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 32px;
+        }
+
+        /* ===== Hero / Featured ===== */
+        .featured {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #fd79a8 100%);
+            border-radius: var(--radius);
+            padding: 48px 40px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .featured::after {
+            content: '';
+            position: absolute;
+            right: -40px; bottom: -40px;
+            width: 200px; height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .featured-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.25);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
+        }
+        .featured h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            position: relative; z-index: 1;
+        }
+        .featured p {
+            opacity: 0.9;
+            max-width: 520px;
+            position: relative; z-index: 1;
+            margin-bottom: 20px;
+        }
+        .featured .btn {
+            display: inline-block;
+            background: #fff;
+            color: var(--accent);
+            padding: 10px 26px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative; z-index: 1;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .featured .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            color: var(--accent);
+        }
+
+        /* ===== Posts ===== */
+        .posts-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .posts-header h3 { font-size: 1.3rem; }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: box-shadow var(--transition), transform var(--transition);
+            display: flex;
+            gap: 24px;
+        }
+        .post-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        .post-thumb {
+            width: 180px; height: 130px;
+            border-radius: 10px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+        }
+        .post-body { flex: 1; display: flex; flex-direction: column; }
+        .post-meta {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+        .post-meta span { display: flex; align-items: center; gap: 4px; }
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .post-title a { color: var(--text); }
+        .post-title a:hover { color: var(--accent); }
+        .post-excerpt {
+            color: var(--text-muted);
+            font-size: 0.93rem;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .post-tags {
+            display: flex; gap: 8px; flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .tag {
+            display: inline-block;
+            background: #f1f0ff;
+            color: var(--accent);
+            padding: 2px 12px;
+            border-radius: 14px;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            display: flex; flex-direction: column; gap: 24px;
+        }
+        .sidebar-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+        .sidebar-card h4 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-light);
+            display: inline-block;
+        }
+
+        .about-avatar {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #fd79a8);
+            margin-bottom: 12px;
+        }
+        .about-name { font-weight: 700; }
+        .about-bio { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+        .category-list { list-style: none; }
+        .category-list li {
+            display: flex; justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        .category-list li:last-child { border-bottom: none; }
+        .cat-count {
+            background: #f1f0ff;
+            color: var(--accent);
+            padding: 1px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .tag-cloud {
+            display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .tag-cloud .tag { cursor: pointer; transition: all var(--transition); }
+        .tag-cloud .tag:hover { background: var(--accent); color: #fff; }
+
+        /* ===== Footer ===== */
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            padding: 32px 24px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+        .footer-social {
+            display: flex; justify-content: center; gap: 16px;
+            margin-bottom: 12px;
+        }
+        .footer-social a {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #f1f0ff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            transition: all var(--transition);
+        }
+        .footer-social a:hover { background: var(--accent); color: #fff; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+                position: absolute; top: 64px; left: 0; right: 0;
+                background: var(--surface);
+                flex-direction: column;
+                padding: 12px;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow);
+            }
+            .nav-links.open { display: flex; }
+            .nav-toggle { display: block; }
+            .post-card { flex-direction: column; }
+            .post-thumb { width: 100%; height: 180px; }
+            .featured { padding: 32px 24px; }
+            .featured h2 { font-size: 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .featured h2 { font-size: 1.25rem; }
+            .post-title { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header>
+    <div class="nav-inner">
+        <a href="#" class="logo">
+            <span class="logo-icon">✦</span>
+            星辰笔记
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#" class="active">首页</a></li>
+            <li><a href="#">技术</a></li>
+            <li><a href="#">生活</a></li>
+            <li><a href="#">随笔</a></li>
+            <li><a href="#">关于</a></li>
+        </ul>
+    </div>
+</header>
+
+<!-- ===== Main Content ===== -->
+<main class="container">
+
+    <!-- Featured / Hero -->
+    <section class="featured">
+        <span class="featured-tag">🔥 精选文章</span>
+        <h2>2024 前端技术趋势：从框架到全栈的演进</h2>
+        <p>React Server Components、Bun 运行时、HTMX 复兴… 新的一年，前端生态正在发生深刻变革。本文梳理了最值得关注的 8 个趋势。</p>
+        <a href="#" class="btn">阅读全文 →</a>
+    </section>
+
+    <!-- Blog Posts -->
+    <section>
+        <div class="posts-header">
+            <h3>📝 最新文章</h3>
+            <a href="#" style="font-size:0.88rem;">查看全部 →</a>
+        </div>
+
+        <div class="post-list" id="postList">
+            <!-- Posts rendered by JS -->
+        </div>
+    </section>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <!-- About -->
+        <div class="sidebar-card">
+            <h4>👤 关于我</h4>
+            <div class="about-avatar"></div>
+            <p class="about-name">林星辰</p>
+            <p class="about-bio">全栈开发者，热爱技术、阅读与写作。这里记录我的学习笔记与生活随想。</p>
+        </div>
+
+        <!-- Categories -->
+        <div class="sidebar-card">
+            <h4>📂 分类</h4>
+            <ul class="category-list">
+                <li><span>前端开发</span> <span class="cat-count">12</span></li>
+                <li><span>后端 & 架构</span> <span class="cat-count">8</span></li>
+                <li><span>工程化 & DevOps</span> <span class="cat-count">6</span></li>
+                <li><span>读书笔记</span> <span class="cat-count">5</span></li>
+                <li><span>生活随笔</span> <span class="cat-count">4</span></li>
+            </ul>
+        </div>
+
+        <!-- Tags -->
+        <div class="sidebar-card">
+            <h4>🏷️ 标签</h4>
+            <div class="tag-cloud">
+                <span class="tag">JavaScript</span>
+                <span class="tag">React</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">Node.js</span>
+                <span class="tag">CSS</span>
+                <span class="tag">Python</span>
+                <span class="tag">Docker</span>
+                <span class="tag">Git</span>
+                <span class="tag">性能优化</span>
+                <span class="tag">设计模式</span>
+                <span class="tag">AI</span>
+                <span class="tag">Vue</span>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer>
+    <div class="footer-social">
+        <a href="#" title="GitHub">⌨</a>
+        <a href="#" title="Twitter">🐦</a>
+        <a href="#" title="Email">✉</a>
+        <a href="#" title="RSS">📡</a>
+    </div>
+    <p>© 2024 星辰笔记 · 用 ❤️ 和代码构建 · <a href="#">RSS 订阅</a></p>
+</footer>
+
+<script>
+    // ===== Blog Post Data =====
+    const posts = [
+        {
+            title: '深入理解 TypeScript 类型体操',
+            date: '2024-12-28',
+            category: '前端开发',
+            excerpt: '从条件类型到模板字面量类型，本文通过 10 个实战案例带你掌握 TypeScript 高级类型系统的精髓。',
+            tags: ['TypeScript', '前端开发'],
+            color: '#74b9ff'
+        },
+        {
+            title: '用 Docker 搭建本地开发环境的正确姿势',
+            date: '2024-12-20',
+            category: '工程化 & DevOps',
+            excerpt: '告别「在我机器上能跑」。详解 Docker Compose 多服务编排、热重载配置与生产级最佳实践。',
+            tags: ['Docker', 'DevOps'],
+            color: '#55efc4'
+        },
+        {
+            title: 'React 性能优化的 7 个实用技巧',
+            date: '2024-12-12',
+            category: '前端开发',
+            excerpt: 'useMemo、virtualization、代码分割… 从原理到实战，让你的 React 应用跑得更快。',
+            tags: ['React', '性能优化', 'JavaScript'],
+            color: '#fab1a0'
+        },
+        {
+            title: '《代码整洁之道》读书笔记',
+            date: '2024-12-05',
+            category: '读书笔记',
+            excerpt: '命名、函数、注释、格式… Uncle Bob 的经典著作对我的编码习惯带来了哪些改变？',
+            tags: ['读书笔记', '设计模式'],
+            color: '#a29bfe'
+        },
+        {
+            title: '从零搭建个人 CI/CD 流水线',
+            date: '2024-11-28',
+            category: '工程化 & DevOps',
+            excerpt: '使用 GitHub Actions + Docker Hub + VPS，实现代码推送自动构建、测试与部署的完整流程。',
+            tags: ['CI/CD', 'Docker', 'Git'],
+            color: '#81ecec'
+        },
+        {
+            title: 'Python 异步编程：async/await 深入浅出',
+            date: '2024-11-20',
+            category: '后端 & 架构',
+            excerpt: '从协程原理到 asyncio 实战，一文讲清 Python 异步编程的那些事儿。',
+            tags: ['Python', '后端开发'],
+            color: '#fdcb6e'
+        },
+        {
+            title: 'CSS Container Queries 实战指南',
+            date: '2024-11-12',
+            category: '前端开发',
+            excerpt: '告别 Media Query 的局限！Container Queries 让组件级响应式设计成为可能。',
+            tags: ['CSS', '前端开发'],
+            color: '#ff7675'
+        },
+    ];
+
+    // ===== Render Posts =====
+    const postList = document.getElementById('postList');
+    posts.forEach(post => {
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.innerHTML = `
+            <div class="post-thumb" style="background:linear-gradient(135deg, ${post.color}, ${post.color}88)"></div>
+            <div class="post-body">
+                <div class="post-meta">
+                    <span>📅 ${post.date}</span>
+                    <span>📂 ${post.category}</span>
+                </div>
+                <h2 class="post-title"><a href="#">${post.title}</a></h2>
+                <p class="post-excerpt">${post.excerpt}</p>
+                <div class="post-tags">
+                    ${post.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+                </div>
+            </div>
+        `;
+        postList.appendChild(card);
+    });
+
+    // ===== Mobile Nav Toggle =====
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+    });
+
+    // ===== Active Nav Link =====
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            navLinks.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            navLinks.classList.remove('open');
+        });
+    });
+</script>
+
+</body>
+</html>
