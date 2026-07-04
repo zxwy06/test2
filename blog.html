@@ -273,6 +273,60 @@
         .about-name { font-weight: 700; }
         .about-bio { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
 
+        /* ===== About Detail ===== */
+        .about-section {
+            grid-column: 1 / -1;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 36px;
+            scroll-margin-top: 88px;
+        }
+        .about-profile {
+            display: grid;
+            grid-template-columns: 96px 1fr;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+        .about-avatar-large {
+            width: 96px;
+            height: 96px;
+            margin-bottom: 0;
+            box-shadow: 0 12px 32px rgba(108,92,231,0.24);
+        }
+        .section-kicker {
+            display: inline-block;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .about-profile h3 {
+            font-size: 1.45rem;
+            margin-bottom: 8px;
+        }
+        .about-profile p,
+        .about-info p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+        .about-info {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            background: #fbfbfd;
+        }
+        .about-info h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
         .category-list { list-style: none; }
         .category-list li {
             display: flex; justify-content: space-between;
@@ -340,6 +394,13 @@
             .post-thumb { width: 100%; height: 180px; }
             .featured { padding: 32px 24px; }
             .featured h2 { font-size: 1.5rem; }
+            .about-section { padding: 28px 24px; }
+            .about-profile {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                text-align: left;
+            }
+            .about-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 480px) {
@@ -348,7 +409,7 @@
         }
     </style>
 </head>
-<body>
+<body id="top">
 
 <!-- ===== Header ===== -->
 <header>
@@ -359,11 +420,11 @@
         </a>
         <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#" class="active">首页</a></li>
+            <li><a href="#top" class="active">首页</a></li>
             <li><a href="#">技术</a></li>
             <li><a href="#">生活</a></li>
             <li><a href="#">随笔</a></li>
-            <li><a href="#">关于</a></li>
+            <li><a href="#about">关于</a></li>
         </ul>
     </div>
 </header>
@@ -432,6 +493,32 @@
             </div>
         </div>
     </aside>
+
+    <!-- About Detail -->
+    <section class="about-section" id="about">
+        <div class="about-profile">
+            <div class="about-avatar about-avatar-large"></div>
+            <div>
+                <span class="section-kicker">ABOUT</span>
+                <h3>关于林星辰</h3>
+                <p>我是一名热爱技术和写作的全栈开发者，喜欢把学习过程、项目经验和生活观察整理成文章。星辰笔记记录我的成长轨迹，也希望能给正在学习编程的朋友带来一点启发。</p>
+            </div>
+        </div>
+        <div class="about-grid">
+            <div class="about-info">
+                <h4>技术方向</h4>
+                <p>关注前端工程化、Node.js 服务端开发、自动化部署和可维护的产品体验，习惯从真实项目中总结方法。</p>
+            </div>
+            <div class="about-info">
+                <h4>写作内容</h4>
+                <p>主要分享前端开发、后端架构、读书笔记和生活随笔，用清晰的示例解释复杂概念。</p>
+            </div>
+            <div class="about-info">
+                <h4>联系方式</h4>
+                <p>欢迎通过邮件或 GitHub 交流技术问题，也欢迎一起讨论项目实践和学习路线。</p>
+            </div>
+        </div>
+    </section>
 </main>
 
 <!-- ===== Footer ===== -->
